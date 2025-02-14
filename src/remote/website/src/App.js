@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import "./output.css"; // Changed to a local CSS file to avoid external dependency issues
+import "./output.css"; // Local CSS file for styling
 
 const generateAESCode = () => {
   const hexChars = "0123456789ABCDEF";
-  let code = "";
-  for (let i = 0; i < 32; i++) {
-    code += hexChars[Math.floor(Math.random() * hexChars.length)];
-  }
-  return code;
+  return Array.from({ length: 32 }, () => hexChars[Math.floor(Math.random() * hexChars.length)]).join('');
 };
 
 const getRandomColdColor = () => {
@@ -28,39 +24,37 @@ export default function AESBackground() {
         {
           id: Date.now(),
           text: generateAESCode(),
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * (window.innerHeight - 150), // Prevent overlapping with content section
+          x: Math.random() * (window.innerWidth - 100), // Prevent off-screen overflow
+          y: Math.random() * (window.innerHeight - 200),
           color: getRandomColdColor(),
         },
       ]);
       
-      setTimeout(() => {
-        setCodes((prev) => prev.slice(1));
-      }, 5000);
+      setCodes((prev) => prev.filter(code => Date.now() - code.id < 5000)); // Remove old codes
     }, 800);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="relative w-full h-screen bg-gradient-to-r from-gray-900 to-black overflow-hidden text-white">
+    <div className="relative w-full min-h-screen bg-gradient-to-r from-gray-900 to-black overflow-hidden text-white font-sans">
       {/* Header */}
-      <div className="absolute top-0 left-0 w-full flex items-center justify-between p-6 bg-black bg-opacity-50 z-10">
-        <h1 className="text-3xl font-bold tracking-wide text-cyan-300 font-mono">
-        Secure your data with trng* encryption
+      <div className="w-full flex flex-col items-center text-center p-6 bg-transparent z-10">
+        <h1 className="text-4xl font-bold tracking-wide text-white font-mono uppercase">
+          Secure Your Data with TRNG Encryption
         </h1>
-        <button className="px-6 py-2 text-lg bg-cyan-500 hover:bg-cyan-600 rounded-lg shadow-lg transition-all">
+        <button className="mt-4 px-6 py-2 text-lg bg-cyan-500 hover:bg-cyan-600 rounded-lg shadow-lg transition-all transform hover:scale-105">
           Watch Video
         </button>
       </div>
       
-      {/* Content Section */}
-      <div className="relative z-20 flex flex-col items-end justify-center text-right mt-24 p-6">
-        <div className="bg-black bg-opacity-50 p-6 rounded-lg max-w-2xl font-mono">
-          <img src="./Image/logo512.png" alt="Logo" className="w-24 h-24 mb-4 opacity-90" />
-          <p className="text-lg text-gray-300 leading-relaxed">
+      {/* Main Content */}
+      <div className="relative z-20 flex flex-col items-center justify-center text-center mt-24 p-6 min-h-screen">
+        <div className="bg-black bg-opacity-60 p-8 rounded-lg max-w-3xl font-mono shadow-lg backdrop-blur-md border border-cyan-500">
+          <img src="./Image/logo512.png" alt="Embeddedgods IoT Security Logo" className="w-32 h-32 mb-4 opacity-90 mx-auto" />
+          <p className="text-xl text-gray-300 leading-relaxed">
             Our cutting-edge IoT solution harnesses real-time temperature data from a Raspberry Pi to generate
-            real randomised data for unique AES encryption keys enhancing data security with unpredictable cryptographic randomness.
+            truly randomized AES encryption keys, enhancing data security with unpredictable cryptographic randomness.
           </p>
         </div>
       </div>
@@ -81,16 +75,31 @@ export default function AESBackground() {
           </motion.div>
         ))}
       </AnimatePresence>
+
+      {/* Scrollable Sections */}
+      <div className="w-full bg-black bg-opacity-80 py-20 text-center text-white min-h-screen flex flex-col items-center justify-center">
+        <h2 className="text-3xl font-bold text-cyan-400">How It Works</h2>
+        <p className="max-w-2xl text-lg mt-4 text-gray-300 leading-relaxed">
+          Using real-time sensor data, our system generates encryption keys dynamically to ensure maximum security.
+          Learn more about our cutting-edge cryptographic techniques.
+        </p>
+      </div>
+      <div className="w-full bg-gray-900 py-20 text-center text-white min-h-screen flex flex-col items-center justify-center">
+        <h2 className="text-3xl font-bold text-cyan-400">Get Started</h2>
+        <p className="max-w-2xl text-lg mt-4 text-gray-300 leading-relaxed">
+          Implement our technology into your IoT devices today and experience unparalleled security.
+        </p>
+      </div>
       
       {/* Footer */}
-      <footer className="absolute bottom-0 left-0 w-full flex flex-col items-center justify-center p-4 bg-black bg-opacity-50">
+      <footer className="w-full flex flex-col items-center justify-center p-6 bg-black bg-opacity-80 backdrop-blur-md">
         <h2 className="text-xl font-semibold text-cyan-400">Embeddedgods</h2>
         <a href="https://github.com/rrroooyyywang/ICL_ES_CW1_Embeddedgods" 
            target="_blank" 
            rel="noopener noreferrer" 
            className="mt-2 flex items-center gap-2 text-gray-300 hover:text-cyan-300">
           <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
-               alt="GitHub" className="w-6 h-6" />
+               alt="GitHub Repository" className="w-6 h-6" />
           View on GitHub
         </a>
       </footer>
