@@ -7,4 +7,6 @@ The integerated code is `src/emb/main.py`.
 # Run website
 - go to folder `./src/remote/website`
 - `npm install`
+- `npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch`
 - `npm start`
+   Edit the code
